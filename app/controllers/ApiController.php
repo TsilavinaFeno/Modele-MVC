@@ -68,7 +68,7 @@ class ApiController extends Controller
     public function updateCarById($id)
     {
         try {
-            if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            if ($_SERVER['REQUEST_METHOD'] == 'PUT') {
                 $data = json_decode(file_get_contents('php://input'), true);
 
                 if (json_last_error() !== JSON_ERROR_NONE) {
@@ -90,8 +90,19 @@ class ApiController extends Controller
     public function deleteCarById($id)
     {
         try {
-            $delete = $this->apiModel->deleteCarById($id);
-            $this->sendJsonResponse($delete, 200);
+            if ($_SERVER['REQUEST_METHOD'] == 'DELETE') {
+
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    // Invalid JSON, send a 400 response
+                    $this->sendJsonResponse(['error' => 'Invalid JSON data.'], 400);
+                    return;
+                }
+
+                $delete = $this->apiModel->deleteCarById($id);
+                $this->sendJsonResponse($delete, 200);
+            } else {
+                $this->sendJsonResponse(['error' => 'Method not allowed'], 405);
+            }
         } catch (\Exception $e) {
             $this->sendJsonResponse(['error' => $e->getMessage()], 500);
         }

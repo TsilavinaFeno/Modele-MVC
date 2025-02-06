@@ -71,7 +71,7 @@ class CarController extends Controller
             ];
 
             $url = BASE_URL . 'api/updateCarById/' . $id;
-            $update = $this->postDataToApi($url, $data);
+            $update = $this->putDataToApi($url, $data);
 
 
             if ($update) {
@@ -142,6 +142,44 @@ class CarController extends Controller
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
         curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+
+        $output = curl_exec($ch);
+
+        if (curl_errno($ch)) {
+            echo 'Error:' . curl_error($ch);
+        }
+
+        curl_close($ch);
+
+        return json_decode($output, true);
+    }
+
+    public function putDataToApi ($url, $data)
+    {
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+
+        $output = curl_exec($ch);
+
+        if (curl_errno($ch)) {
+            echo 'Error:' . curl_error($ch);
+        }
+
+        curl_close($ch);
+
+        return json_decode($output, true);
+    }
+
+    public function deleteDataToApi ($url, $data)
+    {
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
 
         $output = curl_exec($ch);
 
